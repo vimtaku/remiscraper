@@ -69,7 +69,7 @@
 (defn sleeptime []
   (+ 2000 (rand-int 3000))
 )
-(defn get-recipe-title [c-url offset]
+(defn get-recipes [c-url offset]
   (let [
          c-json (get-json-with-sleep (add-offset c-url offset) (sleeptime))
          body-json (json/read-str (:body c-json))
@@ -81,7 +81,7 @@
        ;(res-logger (str c-json))
 
        (if has_next?
-         (concat (result) (get-recipe-title c-url next-offset))
+         (concat (result) (get-recipes c-url next-offset))
          (result)
        )
   )
@@ -91,7 +91,7 @@
 (defn scrape-all-recipe-title [dest]
   (defn scrape-and-write [u]
     (write-result
-      (str (clojure.string/join "\n" (get-recipe-title u 0)) "\n")
+      (str (clojure.string/join "\n" (get-recipes u 0)) "\n")
     dest)
   )
 
@@ -101,6 +101,6 @@
 
 
 (defn -main [& args]
-  (doall (map println (get-recipe-title (first (get-chefs-uris)) 0) ))
+  (doall (map println (get-recipes (first (get-chefs-uris)) 0) ))
 )
 
